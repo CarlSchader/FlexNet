@@ -54,6 +54,10 @@ class logisticRegression:
 		self.w = self.w - (self.learningRate*dldw)
 		self.b = self.b - (self.learningRate*dldb)
 
+
+
+		
+
 class net:
 	def __init__(self,layers,learningRate=1.0,binaryClassification=False,leakRate=0.01):
 		self.layerCount = len(layers)
@@ -67,8 +71,8 @@ class net:
 
 		for i in range(self.layerCount):
 			if i != 0:
-				self.W[i] = np.random.sample((layers[i],layers[i-1]))
-				self.b[i] = np.random.sample((layers[i],1))
+				self.W[i] = np.random.randn(layers[i],layers[i-1]) * 0.01
+				self.b[i] = np.zeros((layers[i],1))
 
 	def forwardPropogate(self,X,round=False):
 		self.A[0] = X
