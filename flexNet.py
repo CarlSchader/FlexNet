@@ -59,10 +59,12 @@ class logisticRegression:
 		
 
 class net:
-	def __init__(self,layers,learningRate=1.0,binaryClassification=False,leakRate=0.01):
+	def __init__(self,layers,learningRate=0.1,binaryClassification=False,leakRate=0.01, regularized=False, regularizationParameter=0.01):
 		self.layerCount = len(layers)
 		self.learningRate = learningRate
 		self.binaryClassification = binaryClassification
+		self.regularized = regularized
+		self.regularizationParameter = regularizationParameter
 		self.leakRate = leakRate
 		self.W = [None]*self.layerCount
 		self.b = [None]*self.layerCount
@@ -99,7 +101,10 @@ class net:
 				dZ[i] = np.subtract(self.A[i],Y)
 			else:
 				dZ[i] = np.dot(self.W[i+1].T,dZ[i+1])*ReLU(self.Z[i],derivative=True)
-			dW[i] = (1.0/len(self.A[0].T))*np.dot(dZ[i],self.A[i-1].T)
+			if self.regularized:
+				dW[i] = ((1.0/len(self.A[0].T))*np.dot(dZ[i],self.A[i-1].T)) + ((self.regularizationParameter/self.layerCount)*self.W[i])
+			else:
+				dW[i] = (1.0/len(self.A[0].T))*np.dot(dZ[i],self.A[i-1].T)
 			db[i] = (1.0/len(self.A[0].T))*np.sum(dZ[i],axis=1,keepdims=True)
 		for i in range(1,self.layerCount):
 			self.W[i] = self.W[i] - (self.learningRate*dW[i])
